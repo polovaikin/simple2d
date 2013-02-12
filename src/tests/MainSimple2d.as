@@ -10,6 +10,7 @@ package tests {
     import flash.events.Event;
     import flash.geom.Rectangle;
 
+    [SWF(width="320", height="500", backgroundColor="0", frameRate="60")]
     public class MainSimple2d extends Sprite {
 
         private var image:Image;
@@ -22,7 +23,7 @@ package tests {
             var bitmapData:BitmapData = new BitmapData(100, 100, true, 0xFF0000FF);
 
 
-            bitmapData.fillRect(new Rectangle(0, 0, 10, 10), 0xFF000000);
+            bitmapData.fillRect(new Rectangle(0, 0, 10, 10), 0xFFFFFFFF);
             bitmapData.fillRect(new Rectangle(90, 90, 10, 10), 0xFFFF0000);
 
             image = new Image(AtlasManager.instance.createImageSource(bitmapData), true);
