@@ -259,20 +259,38 @@ package core {
 
             var verticesTransformed:Vector.<Number> = image.verticesTransformed;
 
-            vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[0];
-            vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[1];
+            var x0:Number = verticesTransformed[0];
+            var x1:Number = verticesTransformed[3];
+            var x2:Number = verticesTransformed[6];
+            var x3:Number = verticesTransformed[9];
+
+            if ((x0 < -1 && x1 < -1 && x2 < -1 && x3 < -1) ||
+                    (1 < x0 && 1 < x1 && 1 < x2 && 1 < x3))return;
+
+            var y0:Number = verticesTransformed[1];
+            var y1:Number = verticesTransformed[4];
+            var y2:Number = verticesTransformed[7];
+            var y3:Number = verticesTransformed[10];
+
+            if ((y0 < -1 && y1 < -1 && y2 < -1 && y3 < -1) ||
+                    (1 < y0 && 1 < y1 && 1 < y2 && 1 < y3))return;
+
+
+            vertexBufferNumber[currentIndexInVertexBuffer++] = x0;
+            vertexBufferNumber[currentIndexInVertexBuffer++] = y0;
             vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[2];
 
-            vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[3];
-            vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[4];
+            vertexBufferNumber[currentIndexInVertexBuffer++] = x1;
+            vertexBufferNumber[currentIndexInVertexBuffer++] = y1;
             vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[5];
 
-            vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[6];
-            vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[7];
+            vertexBufferNumber[currentIndexInVertexBuffer++] = x2;
+            vertexBufferNumber[currentIndexInVertexBuffer++] = y2;
             vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[8];
 
-            vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[9];
-            vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[10];
+
+            vertexBufferNumber[currentIndexInVertexBuffer++] = x3;
+            vertexBufferNumber[currentIndexInVertexBuffer++] = y3;
             vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[11];
 
             var imageSource:ImageSource = image.source;
