@@ -172,8 +172,8 @@ package core {
                 var width:int = stage.stageWidth;
                 var height:int = stage.stageHeight;
             } else {
-                width = Capabilities.screenResolutionX;
-                height = Capabilities.screenResolutionY;
+                width = stage.fullScreenWidth;
+                height = stage.fullScreenHeight;
             }
 
             scaleX = scaleY = 1;
