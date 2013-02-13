@@ -78,6 +78,7 @@ package core {
             if (context3D) {
                 context3D.dispose();
             }
+            app.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
             Renderer.instance.dispose();
         }
 
