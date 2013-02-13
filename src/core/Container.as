@@ -57,6 +57,9 @@ package core {
             }
             child.parent = this;
 
+            if (_width < child.width)_width = child.width;
+            if (_height < child.height)_height = child.height;
+
             return child;
         }
 
@@ -92,15 +95,15 @@ package core {
                 var mousePos:Vector3D = getLocalMousePos();
 
                 //if (containsPoint(mousePos.x, mousePos.y)) {
-                    //if (mouseEnabled) return this;
+                //if (mouseEnabled) return this;
 
-                    if (mouseChildren) {
-                        for (var i:int = _children.length - 1; i >= 0; i--) {
-                            var underMouse:Node = _children[i].getNodeUnderMouse();
-                            if (underMouse) return underMouse;
-                        }
+                if (mouseChildren) {
+                    for (var i:int = _children.length - 1; i >= 0; i--) {
+                        var underMouse:Node = _children[i].getNodeUnderMouse();
+                        if (underMouse) return underMouse;
                     }
-               // }
+                }
+                // }
             }
             return null;
         }
