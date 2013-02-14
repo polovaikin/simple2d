@@ -21,7 +21,7 @@ package core {
             var frames:Vector.<Node> = new <Node>[];
 
             var totalFrames:int = child.totalFrames;
-            while(totalFrames==1){
+            while (totalFrames == 1) {
                 child = MovieClip(child.getChildAt(0));
                 totalFrames = child.totalFrames;
             }
@@ -76,16 +76,17 @@ package core {
 
                 bitmapData.draw(child, new Matrix(bitmapScaleX, 0, 0, bitmapScaleY, tx, ty), null, null, null, true);
 
-                var s:Shape = new Shape();
-                var g:Graphics = s.graphics;
-                g.lineStyle(1, 0x000000, 0.7);
-                g.drawRect(0, 0, bitmapData.width - 1, bitmapData.height - 1);
-                g.moveTo(tx - 4, ty);
-                g.lineTo(tx + 5, ty);
-                g.moveTo(tx, ty - 4);
-                g.lineTo(tx, ty + 5);
-                bitmapData.draw(s);
-
+                if (Engine.instance.debug) {
+                    var s:Shape = new Shape();
+                    var g:Graphics = s.graphics;
+                    g.lineStyle(1, 0x000000, 0.7);
+                    g.drawRect(0, 0, bitmapData.width - 1, bitmapData.height - 1);
+                    g.moveTo(tx - 4, ty);
+                    g.lineTo(tx + 5, ty);
+                    g.moveTo(tx, ty - 4);
+                    g.lineTo(tx, ty + 5);
+                    bitmapData.draw(s);
+                }
 
                 imageSource = AtlasManager.instance.addImageSource(bitmapData, id);
                 imageSource.width /= screenScaleX;

@@ -35,6 +35,8 @@ package core {
         private var app:DisplayObject;
         public var stage:Stage;
 
+        public var debug:Boolean;
+
         public var scaleX:Number = 1;
         public var scaleY:Number = 1;
 

@@ -81,6 +81,13 @@ package core {
             return child;
         }
 
+        public function removeAllChildren():void {
+            for each(var child:Node in _children) {
+                child.parent = null;
+            }
+            _children.length = 0;
+        }
+
         public function getChildAt(index:int):Node {
             if (index < 0 || index >= numChildren)throw new Error("Index " + index + " out of bounds");
             return _children[index];
