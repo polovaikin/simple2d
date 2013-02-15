@@ -30,7 +30,7 @@ package core {
         public var alphaGlobal:Number = 1;
         private var _visible:Boolean = true;
         public var visibleGlobal:Boolean = true;
-        private var _transformInvert:Matrix3D;
+        private var _transformInvert:Matrix3D = new Matrix3D();
 
         public var name:String;
 
@@ -53,6 +53,8 @@ package core {
             clone._visible = _visible;
             clone.visibleGlobal = visibleGlobal;
             clone.mouseEnabled = mouseEnabled;
+            clone._transform = _transform.clone();
+            clone._transformInvert = _transformInvert.clone();
 
             return clone;
         }

@@ -11,10 +11,7 @@ package core {
             clone.mouseChildren = mouseChildren;
 
             for each(var child:Node in _children) {
-
-                var childClone:Node = child.clone();
-                childClone.parent = clone;
-                clone._children.push(childClone);
+                clone.addChild(child.clone());
             }
 
             return clone;

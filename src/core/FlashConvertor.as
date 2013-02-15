@@ -3,6 +3,7 @@ package core {
 
     import flash.display.BitmapData;
     import flash.display.DisplayObject;
+    import flash.display.DisplayObjectContainer;
     import flash.display.Graphics;
     import flash.display.MovieClip;
     import flash.display.Shape;
@@ -14,25 +15,55 @@ package core {
 
     public class FlashConvertor {
 
-        public static function getFramesFromMovieClip(child:MovieClip, border:Rectangle = null, linear:Boolean = false):Vector.<Node> {
+        public static function getAnimationFromMovieClip(displayObject:DisplayObject, border:Rectangle = null, linear:Boolean = false):Animation {
 
-            var className:String = getQualifiedClassName(child);
+            var className:String = getQualifiedClassName(displayObject);
 
             var frames:Vector.<Node> = new <Node>[];
 
-            var totalFrames:int = child.totalFrames;
-            while (totalFrames == 1) {
-                child = MovieClip(child.getChildAt(0));
-                totalFrames = child.totalFrames;
-            }
+            var totalFrames:int = getMaxTotalFrames(displayObject);
 
             for (var i:int = 0; i < totalFrames; i++) {
-                child.gotoAndStop(i);
-                var frame:Node = getNodeFromDisplayObject(child, className + "_" + i, border, linear);
+                gotoAndStopForAllChild(displayObject, i);
+                var frame:Node = getNodeFromDisplayObject(displayObject, className + "_" + i, border, linear);
 
                 frames.push(frame);
             }
-            return frames;
+            return new Animation(frames);
+        }
+
+        public static function getMaxTotalFrames(displayObject:DisplayObject, maxTotalFrames:int = 1):int {
+            if (displayObject is MovieClip) {
+                var totalFrames:int = (displayObject as MovieClip).totalFrames;
+                if (maxTotalFrames < totalFrames)maxTotalFrames = totalFrames;
+            }
+
+            var displayObjectContainer:DisplayObjectContainer = displayObject as DisplayObjectContainer;
+            if (displayObjectContainer) {
+
+                var numChildren:int = displayObjectContainer.numChildren;
+
+                for (var i:int = 0; i < numChildren; i++) {
+                    var child:DisplayObject = displayObjectContainer.getChildAt(i);
+                    maxTotalFrames = getMaxTotalFrames(child, maxTotalFrames);
+                }
+            }
+            return maxTotalFrames;
+        }
+
+        public static function gotoAndStopForAllChild(displayObject:DisplayObject, frame:Object):void {
+            if (displayObject is MovieClip)(displayObject as MovieClip).gotoAndStop(frame);
+
+            var displayObjectContainer:DisplayObjectContainer = displayObject as DisplayObjectContainer;
+            if (displayObjectContainer) {
+
+                var numChildren:int = displayObjectContainer.numChildren;
+
+                for (var i:int = 0; i < numChildren; i++) {
+                    var child:DisplayObject = displayObjectContainer.getChildAt(i);
+                    gotoAndStopForAllChild(child, frame);
+                }
+            }
         }
 
         public static function getNodeFromDisplayObject(child:DisplayObject, id:String = null, border:Rectangle = null, linear:Boolean = false):Node {
@@ -100,7 +131,7 @@ package core {
             var container:Container = new Container();
             var bitmap:Image = new Image(imageSource);
             bitmap.linear = linear;
-            bitmap.name = getShortClassName(child) + "_" + child.name;
+            bitmap.name = id + "_" + getShortClassName(child) + "_" + child.name;
 
             container.addChild(bitmap);
 

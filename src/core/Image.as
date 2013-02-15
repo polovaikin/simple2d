@@ -11,7 +11,7 @@ package core {
         override public function clone():Node {
             var clone:Image = Image(super.clone());
             clone._source = _source;
-            clone.vertices = vertices;
+            clone.vertices = vertices.concat();
             clone.blendMode = blendMode;
             clone.linear = linear;
 
