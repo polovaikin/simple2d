@@ -5,14 +5,12 @@ package core {
 
         private var vertices:Vector.<Number> = new <Number>[];
         private var _verticesTransformed:Vector.<Number> = new <Number>[];
-        public var blendMode:BlendMode3D = BlendMode3D.NORMAL;
         public var linear:Boolean;
 
         override public function clone():Node {
             var clone:Image = Image(super.clone());
             clone._source = _source;
             clone.vertices = vertices.concat();
-            clone.blendMode = blendMode;
             clone.linear = linear;
 
             return clone;

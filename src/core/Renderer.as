@@ -162,7 +162,7 @@ package core {
                 var atlasTexture:AtlasTexture = image.source.texture;
 
                 var texture:Texture = atlasTexture.texture;
-                var blendMode:BlendMode3D = image.blendMode;
+                var blendMode:BlendMode3D = image.blendModeGlobal;
                 var linear:Boolean = image.linear;
 
                 if (lastTexture != texture || lastBlendMode != blendMode || lastLinear != linear) {
@@ -190,7 +190,7 @@ package core {
 
             var blendMode:BlendMode3D = lastBlendMode;
 
-            if (blendMode) {
+            if (blendMode && blendMode != BlendMode3D.NORMAL) {
                 blendMode.apply(context3D);
             } else {
                 BlendMode3D.NORMAL.apply(context3D);

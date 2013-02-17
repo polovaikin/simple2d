@@ -30,6 +30,8 @@ package core {
         public var alphaGlobal:Number = 1;
         private var _visible:Boolean = true;
         public var visibleGlobal:Boolean = true;
+        private var _blendMode:BlendMode3D = BlendMode3D.NORMAL;
+        public var blendModeGlobal:BlendMode3D = BlendMode3D.NORMAL;
         private var _transformInvert:Matrix3D = new Matrix3D();
 
         public var name:String;
@@ -52,6 +54,8 @@ package core {
             clone.alphaGlobal = alphaGlobal;
             clone._visible = _visible;
             clone.visibleGlobal = visibleGlobal;
+            clone._blendMode = _blendMode;
+            clone.blendModeGlobal = blendModeGlobal;
             clone.mouseEnabled = mouseEnabled;
             clone._transform = _transform.clone();
             clone._transformInvert = _transformInvert.clone();
@@ -151,9 +155,18 @@ package core {
         protected function validateProperty():void {
             alphaGlobal = _alpha;
             visibleGlobal = _visible;
+            blendModeGlobal = _blendMode;
             if (parent) {
                 alphaGlobal *= parent.alphaGlobal;
                 visibleGlobal &&= parent.visibleGlobal;
+
+
+                var parentBlendMode:BlendMode3D = parent.blendMode;
+
+                if (parentBlendMode != BlendMode3D.NORMAL) {
+                    blendModeGlobal = parentBlendMode;
+                }
+
             }
         }
 
@@ -253,6 +266,15 @@ package core {
 
         public function set height(value:Number):void {
             _height = value;
+        }
+
+        public function get blendMode():BlendMode3D {
+            return _blendMode;
+        }
+
+        public function set blendMode(value:BlendMode3D):void {
+            _blendMode = value;
+            validateMeAndChildrenProperty();
         }
     }
 }
