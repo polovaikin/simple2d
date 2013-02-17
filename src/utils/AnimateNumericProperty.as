@@ -17,6 +17,8 @@ package utils {
         private var completeFunction:Function;
 
         public function play(target:Object, property:String, fromValue:Number, toValue:Number, duration:int, completeFunction:Function = null):void {
+            stop();
+
             this.target = target;
             this.property = property;
             this.fromValue = fromValue;
