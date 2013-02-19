@@ -12,7 +12,7 @@ package core.atlas {
     public class AtlasTexture {
 
         public var texture:Texture;
-        private var bitmapData:BitmapData;
+        public var bitmapData:BitmapData;
         private var isBitmapDataChange:Boolean = true;
         private var root:AtlasNode;
 

@@ -208,9 +208,7 @@ package core {
                 context3D.setVertexBufferAt(2, null); //alpha
             }
 
-            var shader:Program3D = lastLinear ? (needAlpha ? shaderAlphaLinear : shaderLinear) : (needAlpha ? shaderAlpha : shader)
-
-            context3D.setProgram(shader);
+            context3D.setProgram(lastLinear ? (needAlpha ? shaderAlphaLinear : shaderLinear) : (needAlpha ? shaderAlpha : shader));
 
             context3D.drawTriangles(getIndexBuffer(batchCount), 0, batchCount << 1);
 

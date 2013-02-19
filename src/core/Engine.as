@@ -160,7 +160,7 @@ package core {
             context3D = stage3D.context3D;
             trace(context3D.driverInfo);
 
-            context3D.enableErrorChecking = false;
+            context3D.enableErrorChecking = debug;
             Renderer.instance.init(context3D);
 
             driverInfo = context3D.driverInfo;
