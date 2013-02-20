@@ -199,6 +199,8 @@ package core {
 
             var time:int = getTimer();
 
+            Renderer.instance.imageCount = 0;
+
             scene.render(time);
 
             Renderer.instance.renderBatch();

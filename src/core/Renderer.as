@@ -154,7 +154,11 @@ package core {
         public static var maxSprites:int = 1000;
         private var needAlpha:Boolean;
 
+        public var imageCount:int;
+
         public function render(image:Image):void {
+            imageCount++;
+
             if (batchCount >= maxSprites) {
                 renderBatch();
             } else {

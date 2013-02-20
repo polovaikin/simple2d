@@ -135,8 +135,8 @@ package core {
 
             container.addChild(bitmap);
 
-            bitmap.x = bounds.left * scaleX;
-            bitmap.y = bounds.top * scaleX;
+            bitmap.x = bounds.left * matrix.a;
+            bitmap.y = bounds.top * matrix.d;
 
             if (matrix.a < 0)bitmap.scaleX = -1;
             if (matrix.d < 0)bitmap.scaleY = -1;
