@@ -144,8 +144,10 @@ package core {
         }
 
         public function set alpha(value:Number):void {
-            _alpha = value;
-            validateMeAndChildrenProperty();
+            if (_alpha != value) {
+                _alpha = value;
+                validateMeAndChildrenProperty();
+            }
         }
 
         public function validateMeAndChildrenProperty():void {
@@ -175,8 +177,10 @@ package core {
         }
 
         public function set visible(value:Boolean):void {
-            _visible = value;
-            validateMeAndChildrenProperty();
+            if (_visible != value) {
+                _visible = value;
+                validateMeAndChildrenProperty();
+            }
         }
 
         public function render(time:int):void {
@@ -188,9 +192,11 @@ package core {
         }
 
         public function set x(value:Number):void {
-            _x = engine.roundPixelX(value);
-
-            invalidateTransform();
+            var newValue:Number = engine.roundPixelX(value);
+            if (_x != newValue) {
+                _x = newValue;
+                invalidateTransform();
+            }
         }
 
         public function get y():Number {
@@ -198,9 +204,11 @@ package core {
         }
 
         public function set y(value:Number):void {
-            _y = engine.roundPixelY(value);
-
-            invalidateTransform();
+            var newValue:Number = engine.roundPixelY(value);
+            if (_y != newValue) {
+                _y = newValue;
+                invalidateTransform();
+            }
         }
 
         public function invalidateTransform():void {
@@ -212,8 +220,10 @@ package core {
         }
 
         public function set scaleX(value:Number):void {
-            _scaleX = value;
-            invalidateTransform();
+            if (_scaleX != value) {
+                _scaleX = value;
+                invalidateTransform();
+            }
         }
 
         public function get scaleY():Number {
@@ -221,8 +231,10 @@ package core {
         }
 
         public function set scaleY(value:Number):void {
-            _scaleY = value;
-            invalidateTransform();
+            if (_scaleY != value) {
+                _scaleY = value;
+                invalidateTransform();
+            }
         }
 
         public function get rotateX():Number {
@@ -230,8 +242,10 @@ package core {
         }
 
         public function set rotateX(value:Number):void {
-            _rotateX = value;
-            invalidateTransform();
+            if (_rotateX != value) {
+                _rotateX = value;
+                invalidateTransform();
+            }
         }
 
         public function get rotateY():Number {
@@ -239,8 +253,10 @@ package core {
         }
 
         public function set rotateY(value:Number):void {
-            _rotateY = value;
-            invalidateTransform();
+            if (_rotateY != value) {
+                _rotateY = value;
+                invalidateTransform();
+            }
         }
 
         public function get rotateZ():Number {
@@ -248,8 +264,10 @@ package core {
         }
 
         public function set rotateZ(value:Number):void {
-            _rotateZ = value;
-            invalidateTransform();
+            if (_rotateZ != value) {
+                _rotateZ = value;
+                invalidateTransform();
+            }
         }
 
         public function get width():Number {
@@ -273,8 +291,10 @@ package core {
         }
 
         public function set blendMode(value:BlendMode3D):void {
-            _blendMode = value;
-            validateMeAndChildrenProperty();
+            if (_blendMode != value) {
+                _blendMode = value;
+                validateMeAndChildrenProperty();
+            }
         }
     }
 }
