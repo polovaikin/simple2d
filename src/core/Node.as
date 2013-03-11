@@ -25,7 +25,7 @@ package core {
         protected var _width:Number = 0;
         protected var _height:Number = 0;
 
-        protected var isChangeTransForm:Boolean = true;
+        protected var isChangeTransform:Boolean = true;
         private var _alpha:Number = 1;
         public var alphaGlobal:Number = 1;
         private var _visible:Boolean = true;
@@ -68,7 +68,7 @@ package core {
         }
 
         public function get transformInvert():Matrix3D {
-            if (isChangeTransForm)validateMatrix();
+            if (isChangeTransform)validateMatrix();
             return _transformInvert;
         }
 
@@ -108,15 +108,11 @@ package core {
         }
 
         public function get transform():Matrix3D {
-            if (isChangeTransForm) {
-                isChangeTransForm = false;
+            if (isChangeTransform) {
+                isChangeTransform = false;
                 validateMatrix();
             }
             return _transform;
-        }
-
-        public function invalidateMatrix():void {
-            invalidateTransform();
         }
 
         public function validateMatrix():void {
@@ -212,7 +208,7 @@ package core {
         }
 
         public function invalidateTransform():void {
-            isChangeTransForm = true;
+            isChangeTransform = true;
         }
 
         public function get scaleX():Number {

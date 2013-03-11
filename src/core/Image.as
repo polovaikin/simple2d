@@ -23,8 +23,8 @@ package core {
         }
 
         public function get verticesTransformed():Vector.<Number> {
-            if (isChangeTransForm) {
-                isChangeTransForm = false;
+            if (isChangeTransform) {
+                isChangeTransform = false;
                 validateMatrix();
                 _transform.transformVectors(vertices, _verticesTransformed);
             }
