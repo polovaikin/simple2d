@@ -107,8 +107,6 @@ package core {
         }
 
         public function validateMatrix():void {
-            _transform.identity();
-
             _transform.createBox(_scaleX, _scaleY, _rotation * 0.01745329251, _x, _y);
 
             if (parent) {

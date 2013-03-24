@@ -50,7 +50,7 @@ package core {
         public function validateVertices():void {
             if (isChangeVertices) {
                 isChangeVertices = false;
-                var transform:Matrix = transform;
+                var transform:Matrix = this.transform;
                 var a:Number = transform.a;
                 var b:Number = transform.b;
                 var c:Number = transform.c;
@@ -58,15 +58,15 @@ package core {
                 var tx:Number = transform.tx;
                 var ty:Number = transform.ty;
 
-                x0 = 0 * a + 0 * c + tx;
-                x1 = 0 * a + _height * c + tx;
+                x0 = tx;
+                x1 = _height * c + tx;
                 x2 = _width * a + _height * c + tx;
-                x3 = _width * a + 0 * c + tx;
+                x3 = _width * a + tx;
 
-                y0 = 0 * b + 0 * d + ty;
-                y1 = 0 * b + _height * d + ty;
+                y0 = ty;
+                y1 = _height * d + ty;
                 y2 = _width * b + _height * d + ty;
-                y3 = _width * b + 0 * d + ty;
+                y3 = _width * b + ty;
             }
         }
 

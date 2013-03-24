@@ -62,14 +62,14 @@ package core {
 
             indexBufferByCount = new Object();
 
-            var vertexCount:int = maxSprites * 4;
+            var vertexCount:int = maxImageCount * 4;
 
             vertexBufferNumber = new Vector.<Number>(vertexCount * 5, true);
 
             vertexBuffer3D = context3D.createVertexBuffer(vertexCount, 5);
             vertexBuffer3D.uploadFromVector(vertexBufferNumber, 0, vertexCount);
 
-            var indexCount:int = maxSprites * 6;
+            var indexCount:int = maxImageCount * 6;
 
             indexBufferUint = new Vector.<uint>(indexCount, true);
 
@@ -111,22 +111,22 @@ package core {
         }
 
         private var currentIndexInVertexBuffer:int = 0;
-        private var batchCount:int = 0;
-        public var batchAll:int = 0;
+        private var imageCount:int = 0;
+        public var renderCount:int = 0;
         private var vertexCount:int = 0;
         private var lastTexture:Texture;
         private var lastBlendMode:BlendMode3D;
 
         private var lastLinear:Boolean;
 
-        public static var maxSprites:int = 1000;
+        public static var maxImageCount:int = 10000;
 
-        public var imageCount:int;
+        public var imageCountAll:int;
 
         public function render(image:Image):void {
-            imageCount++;
+            imageCountAll++;
 
-            if (batchCount >= maxSprites) {
+            if (imageCount >= maxImageCount) {
                 renderBatch();
             } else {
 
@@ -149,9 +149,9 @@ package core {
         }
 
         public function renderBatch():void {
-            if (batchCount == 0 || !lastTexture)return;
+            if (imageCount == 0 || !lastTexture)return;
 
-            batchAll++;
+            renderCount++;
 
             vertexBuffer3D.uploadFromVector(vertexBufferNumber, 0, vertexCount);
 
@@ -166,13 +166,13 @@ package core {
             context3D.setTextureAt(0, lastTexture);
             context3D.setProgram(lastLinear ? shaderAlphaLinear : shaderAlpha);
 
-            context3D.drawTriangles(getIndexBuffer(batchCount), 0, batchCount << 1);
+            context3D.drawTriangles(getIndexBuffer(imageCount), 0, imageCount << 1);
 
             clear();
         }
 
         private function clear():void {
-            batchCount = 0;
+            imageCount = 0;
             vertexCount = 0;
             currentIndexInVertexBuffer = 0;
             lastBlendMode = null;
@@ -254,7 +254,7 @@ package core {
 
 
             vertexCount += 4;
-            batchCount++;
+            imageCount++;
         }
     }
 
