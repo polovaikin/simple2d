@@ -111,7 +111,7 @@ package core {
         }
 
         private var currentIndexInVertexBuffer:int = 0;
-        private var imageCount:int = 0;
+        private var imageCountBatch:int = 0;
         public var renderCount:int = 0;
         private var vertexCount:int = 0;
         private var lastTexture:Texture;
@@ -121,12 +121,12 @@ package core {
 
         public static var maxImageCount:int = 10000;
 
-        public var imageCountAll:int;
+        public var imageCount:int;
 
         public function render(image:Image):void {
-            imageCountAll++;
+            imageCount++;
 
-            if (imageCount >= maxImageCount) {
+            if (imageCountBatch >= maxImageCount) {
                 renderBatch();
             } else {
 
@@ -149,30 +149,24 @@ package core {
         }
 
         public function renderBatch():void {
-            if (imageCount == 0 || !lastTexture)return;
+            if (imageCountBatch == 0 || !lastTexture)return;
 
             renderCount++;
 
             vertexBuffer3D.uploadFromVector(vertexBufferNumber, 0, vertexCount);
 
-            var blendMode:BlendMode3D = lastBlendMode;
-
-            if (blendMode && blendMode != BlendMode3D.NORMAL) {
-                blendMode.apply(context3D);
-            } else {
-                BlendMode3D.NORMAL.apply(context3D);
-            }
+            lastBlendMode.apply(context3D);
 
             context3D.setTextureAt(0, lastTexture);
             context3D.setProgram(lastLinear ? shaderAlphaLinear : shaderAlpha);
 
-            context3D.drawTriangles(getIndexBuffer(imageCount), 0, imageCount << 1);
+            context3D.drawTriangles(getIndexBuffer(imageCountBatch), 0, imageCountBatch << 1);
 
             clear();
         }
 
         private function clear():void {
-            imageCount = 0;
+            imageCountBatch = 0;
             vertexCount = 0;
             currentIndexInVertexBuffer = 0;
             lastBlendMode = null;
@@ -254,7 +248,7 @@ package core {
 
 
             vertexCount += 4;
-            imageCount++;
+            imageCountBatch++;
         }
     }
 

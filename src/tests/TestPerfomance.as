@@ -58,6 +58,7 @@ package tests {
                 }
             }
 
+
             addEventListener(Event.ENTER_FRAME, onEnterFrame);
 
             textField = new TextField();

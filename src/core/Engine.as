@@ -206,7 +206,7 @@ package core {
 
             var time:int = getTimer();
 
-            Renderer.instance.imageCountAll = 0;
+            Renderer.instance.imageCount = 0;
             Renderer.instance.renderCount = 0;
 
             scene.render(time);
