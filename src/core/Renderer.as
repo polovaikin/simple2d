@@ -308,7 +308,7 @@ package core {
             uvBufferNumber[currentIndexInUVBuffer++] = imageSource.u1;
             uvBufferNumber[currentIndexInUVBuffer++] = imageSource.v0;
 
-            var alpha:int = image.alpha;
+            var alpha:Number = image.alphaGlobal;
             needAlpha ||= alpha < 1;
 
             alphaBufferNumber[currentIndexInAlhaBuffer++] = alpha;
