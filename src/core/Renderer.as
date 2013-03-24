@@ -96,6 +96,8 @@ package core {
             context3D.setVertexBufferAt(1, vertexBuffer3D, 2, Context3DVertexBufferFormat.FLOAT_2); //uv
             context3D.setVertexBufferAt(2, vertexBuffer3D, 4, Context3DVertexBufferFormat.FLOAT_1); //alpha
 
+            context3D.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, Vector.<Number>([0, 0, 1, 0]), 1);
+
             shaderAlphaLinear = createShader(true);
             shaderAlpha = createShader(false);
         }
@@ -177,11 +179,16 @@ package core {
         private function createShader(linear:Boolean):Program3D {
             var filter:String = linear ? "linear" : "nearest";
 
-            var vs:String = "mov op, va0\n"
+            var vs:String = "";
+
+            vs += "mov vt0, vc0\n";
+            vs += "seq vt0.z, va2.x, vc0.x\n";
+
+            vs += "sub op, va0, vt0\n";
             vs += "mov v0, va1\n";
-
-
             vs += "mov v1, va2\n";
+
+
 
             var fs:String = "tex ft1, v0.xy, fs0 <display, repeat, " + filter + "> \n";
             fs += "mul oc, ft1, v1.x";

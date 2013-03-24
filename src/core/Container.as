@@ -1,6 +1,5 @@
 package core {
     import flash.geom.Point;
-    import flash.geom.Vector3D;
 
     public class Container extends Node {
 

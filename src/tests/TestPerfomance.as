@@ -54,7 +54,7 @@ package tests {
                     image.x = -bitmapData.width / 2;
                     image.y = -bitmapData.height / 2;
 
-                    sprite.alpha = 0.7;
+                    sprite.alpha = scene.numChildren>300? 0.3: 0.7;
                 }
             }
 
