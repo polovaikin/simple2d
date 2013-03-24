@@ -77,7 +77,7 @@ package core {
         }
 
         override public function render(time:int):void {
-            if (visibleGlobal) {
+            if (visibleGlobal && alphaGlobal) {
                 Renderer.instance.render(this);
             }
         }
