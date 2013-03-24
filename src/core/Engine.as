@@ -15,6 +15,7 @@ package core {
     import flash.events.Event;
     import flash.events.KeyboardEvent;
     import flash.events.MouseEvent;
+    import flash.geom.Point;
     import flash.geom.Vector3D;
     import flash.system.Capabilities;
     import flash.ui.Keyboard;
@@ -23,6 +24,7 @@ package core {
     public class Engine {
 
         private static var _instance:Engine;
+
 
         public static function get instance():Engine {
             if (!_instance)_instance = new Engine();
@@ -46,7 +48,7 @@ package core {
 
         public var virtualWidth:Number;
         public var virtualHeight:Number;
-        public var viewportMousePos:Vector3D;
+        public var viewportMousePos:Point;
 
         private var antiAlias:int;
 
@@ -125,7 +127,7 @@ package core {
 
         private function onMouseEvent(event:MouseEvent):void {
 
-            viewportMousePos = scene.transform.transformVector(new Vector3D(event.stageX / scaleX, event.stageY / scaleY, 0));
+            viewportMousePos = scene.transform.transformPoint(new Point(event.stageX / scaleX, event.stageY / scaleY));
 
             event.stopImmediatePropagation();
 

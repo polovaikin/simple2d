@@ -144,7 +144,7 @@ package core {
             container.x = child.x;
             container.y = child.y;
 
-            container.rotateZ = rotation;
+            container.rotation = rotation;
 
             child.rotation = rotation;
 

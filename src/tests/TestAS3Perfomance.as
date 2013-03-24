@@ -3,6 +3,7 @@ package tests {
     import flash.display.Sprite;
     import flash.display.StageScaleMode;
     import flash.events.Event;
+    import flash.geom.Matrix;
     import flash.geom.Matrix3D;
     import flash.text.TextField;
     import flash.text.TextFieldAutoSize;
@@ -93,6 +94,33 @@ package tests {
                 var outY3:Number = inX3 * m10 + inY3 * m11 + m12;
             }
             label.appendText("\n" + (getTimer() - time));
+
+            var m2d:Matrix = new Matrix(getRandom(), getRandom(), getRandom(), getRandom(), getRandom());
+
+            time = getTimer();
+            for (i = 0; i < n; i++) {
+                m2d.rotate(17);
+            }
+            label.appendText("\nmd2 rotate " + (getTimer() - time));
+
+
+            var rotate:Number = 17;
+
+            time = getTimer();
+            for (i = 0; i < n; i++) {
+                var mr00:Number = Math.cos(rotate);
+                var mr10:Number = Math.sin(rotate);
+                var mr01:Number = -mr10;
+                var mr11:Number = mr00;
+
+                m00 = m00 * mr00 + m01 * mr10;
+                m01 = m00 * mr01 + m01 * mr11;
+
+                m10 = m10 * mr00 + m11 * mr10;
+                m11 = m10 * mr01 + m11 * mr11;
+            }
+            label.appendText("\nmd2 rotate " + (getTimer() - time));
+
 
         }
 

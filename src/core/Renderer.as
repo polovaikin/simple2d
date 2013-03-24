@@ -64,9 +64,9 @@ package core {
 
             var vertexCount:int = maxSprites * 4;
 
-            vertexBufferNumber = new Vector.<Number>(vertexCount * 6, true);
+            vertexBufferNumber = new Vector.<Number>(vertexCount * 5, true);
 
-            vertexBuffer3D = context3D.createVertexBuffer(vertexCount, 6);
+            vertexBuffer3D = context3D.createVertexBuffer(vertexCount, 5);
             vertexBuffer3D.uploadFromVector(vertexBufferNumber, 0, vertexCount);
 
             var indexCount:int = maxSprites * 6;
@@ -92,9 +92,9 @@ package core {
             context3D.setCulling(Context3DTriangleFace.NONE);
             context3D.setDepthTest(false, Context3DCompareMode.ALWAYS);
 
-            context3D.setVertexBufferAt(0, vertexBuffer3D, 0, Context3DVertexBufferFormat.FLOAT_3); //xyz
-            context3D.setVertexBufferAt(1, vertexBuffer3D, 3, Context3DVertexBufferFormat.FLOAT_2); //uv
-            context3D.setVertexBufferAt(2, vertexBuffer3D, 5, Context3DVertexBufferFormat.FLOAT_1); //alpha
+            context3D.setVertexBufferAt(0, vertexBuffer3D, 0, Context3DVertexBufferFormat.FLOAT_2); //xy
+            context3D.setVertexBufferAt(1, vertexBuffer3D, 2, Context3DVertexBufferFormat.FLOAT_2); //uv
+            context3D.setVertexBufferAt(2, vertexBuffer3D, 4, Context3DVertexBufferFormat.FLOAT_1); //alpha
 
             shaderAlphaLinear = createShader(true);
             shaderAlpha = createShader(false);
@@ -205,20 +205,20 @@ package core {
 
         private function loadPoints(image:Image):void {
 
-            var verticesTransformed:Vector.<Number> = image.verticesTransformed;
+            image.validateVertices();
 
-            var x0:Number = verticesTransformed[0];
-            var x1:Number = verticesTransformed[3];
-            var x2:Number = verticesTransformed[6];
-            var x3:Number = verticesTransformed[9];
+            var x0:Number = image.x0;
+            var x1:Number = image.x1;
+            var x2:Number = image.x2;
+            var x3:Number = image.x3;
 
             if ((x0 < -1 && x1 < -1 && x2 < -1 && x3 < -1) ||
                     (1 < x0 && 1 < x1 && 1 < x2 && 1 < x3))return;
 
-            var y0:Number = verticesTransformed[1];
-            var y1:Number = verticesTransformed[4];
-            var y2:Number = verticesTransformed[7];
-            var y3:Number = verticesTransformed[10];
+            var y0:Number = image.y0;
+            var y1:Number = image.y1;
+            var y2:Number = image.y2;
+            var y3:Number = image.y3;
 
             if ((y0 < -1 && y1 < -1 && y2 < -1 && y3 < -1) ||
                     (1 < y0 && 1 < y1 && 1 < y2 && 1 < y3))return;
@@ -230,28 +230,24 @@ package core {
 
             vertexBufferNumber[currentIndexInVertexBuffer++] = x0;
             vertexBufferNumber[currentIndexInVertexBuffer++] = y0;
-            vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[2];
             vertexBufferNumber[currentIndexInVertexBuffer++] = imageSource.u0;
             vertexBufferNumber[currentIndexInVertexBuffer++] = imageSource.v0;
             vertexBufferNumber[currentIndexInVertexBuffer++] = alpha;
 
             vertexBufferNumber[currentIndexInVertexBuffer++] = x1;
             vertexBufferNumber[currentIndexInVertexBuffer++] = y1;
-            vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[5];
             vertexBufferNumber[currentIndexInVertexBuffer++] = imageSource.u0;
             vertexBufferNumber[currentIndexInVertexBuffer++] = imageSource.v1;
             vertexBufferNumber[currentIndexInVertexBuffer++] = alpha;
 
             vertexBufferNumber[currentIndexInVertexBuffer++] = x2;
             vertexBufferNumber[currentIndexInVertexBuffer++] = y2;
-            vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[8];
             vertexBufferNumber[currentIndexInVertexBuffer++] = imageSource.u1;
             vertexBufferNumber[currentIndexInVertexBuffer++] = imageSource.v1;
             vertexBufferNumber[currentIndexInVertexBuffer++] = alpha;
 
             vertexBufferNumber[currentIndexInVertexBuffer++] = x3;
             vertexBufferNumber[currentIndexInVertexBuffer++] = y3;
-            vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[11];
             vertexBufferNumber[currentIndexInVertexBuffer++] = imageSource.u1;
             vertexBufferNumber[currentIndexInVertexBuffer++] = imageSource.v0;
             vertexBufferNumber[currentIndexInVertexBuffer++] = alpha;

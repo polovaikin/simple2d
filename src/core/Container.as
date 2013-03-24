@@ -1,4 +1,5 @@
 package core {
+    import flash.geom.Point;
     import flash.geom.Vector3D;
 
     public class Container extends Node {
@@ -96,7 +97,7 @@ package core {
 
         override public function getNodeUnderMouse():Node {
             if (visibleGlobal) {
-                var mousePos:Vector3D = getLocalMousePos();
+                var mousePos:Point = getLocalMousePos();
 
                 //if (containsPoint(mousePos.x, mousePos.y)) {
                 //if (mouseEnabled) return this;

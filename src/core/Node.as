@@ -1,8 +1,8 @@
 package core {
     import flash.events.Event;
     import flash.events.EventDispatcher;
-    import flash.geom.Matrix3D;
-    import flash.geom.Vector3D;
+    import flash.geom.Matrix;
+    import flash.geom.Point;
 
     import utils.getClass;
 
@@ -10,15 +10,13 @@ package core {
 
         protected static const engine:Engine = Engine.instance;
 
-        protected var _transform:Matrix3D = new Matrix3D();
+        protected var _transform:Matrix = new Matrix();
         public var parent:Container;
         private var _x:Number = 0;
         private var _y:Number = 0;
         private var _scaleX:Number = 1;
         private var _scaleY:Number = 1;
-        private var _rotateX:Number = 0;
-        private var _rotateY:Number = 0;
-        private var _rotateZ:Number = 0;
+        private var _rotation:Number = 0;
 
         public var mouseEnabled:Boolean;
 
@@ -32,7 +30,6 @@ package core {
         public var visibleGlobal:Boolean = true;
         private var _blendMode:BlendMode3D = BlendMode3D.NORMAL;
         public var blendModeGlobal:BlendMode3D = BlendMode3D.NORMAL;
-        private var _transformInvert:Matrix3D = new Matrix3D();
 
         public var name:String;
 
@@ -47,9 +44,7 @@ package core {
             clone._height = _height;
             clone._scaleX = _scaleX;
             clone._scaleY = _scaleY;
-            clone._rotateX = _rotateX;
-            clone._rotateY = _rotateY;
-            clone._rotateZ = _rotateZ;
+            clone._rotation = _rotation;
             clone._alpha = _alpha;
             clone.alphaGlobal = alphaGlobal;
             clone._visible = _visible;
@@ -58,23 +53,19 @@ package core {
             clone.blendModeGlobal = blendModeGlobal;
             clone.mouseEnabled = mouseEnabled;
             clone._transform = _transform.clone();
-            clone._transformInvert = _transformInvert.clone();
 
             return clone;
         }
 
-        public function getLocalMousePos():Vector3D {
-            return transformInvert.transformVector(engine.viewportMousePos);
-        }
-
-        public function get transformInvert():Matrix3D {
-            if (isChangeTransform)validateMatrix();
-            return _transformInvert;
+        public function getLocalMousePos():Point {
+            var m:Matrix = transform.clone();
+            m.invert();
+            return m.transformPoint(engine.viewportMousePos);
         }
 
         public function getNodeUnderMouse():Node {
             if (mouseEnabled && visibleGlobal) {
-                var mousePos:Vector3D = getLocalMousePos();
+                var mousePos:Point = getLocalMousePos();
                 if (containsPoint(mousePos.x, mousePos.y))return this;
             }
 
@@ -92,7 +83,7 @@ package core {
             if (guiMouseEvent) {
                 if (guiMouseEvent.isStopPropagation)return true;
 
-                var mousePos:Vector3D = getLocalMousePos();
+                var mousePos:Point = getLocalMousePos();
 
                 guiMouseEvent.localX = mousePos.x;
                 guiMouseEvent.localY = mousePos.y;
@@ -107,7 +98,7 @@ package core {
             return true;
         }
 
-        public function get transform():Matrix3D {
+        public function get transform():Matrix {
             if (isChangeTransform) {
                 isChangeTransform = false;
                 validateMatrix();
@@ -118,21 +109,11 @@ package core {
         public function validateMatrix():void {
             _transform.identity();
 
-            _transform.appendRotation(_rotateX, Vector3D.X_AXIS);
-            _transform.appendRotation(_rotateY, Vector3D.Y_AXIS);
-            _transform.appendRotation(_rotateZ, Vector3D.Z_AXIS);
-
-            _transform.appendScale(_scaleX, _scaleY, 1);
-
-            _transform.appendTranslation(_x, _y, 0);
+            _transform.createBox(_scaleX, _scaleY, _rotation * 0.01745329251, _x, _y);
 
             if (parent) {
-                _transform.append(parent.transform);
+                _transform.concat(parent.transform);
             }
-
-            _transformInvert = _transform.clone();
-            _transformInvert.invert();
-
         }
 
         public function get alpha():Number {
@@ -233,35 +214,13 @@ package core {
             }
         }
 
-        public function get rotateX():Number {
-            return _rotateX;
+        public function get rotation():Number {
+            return _rotation;
         }
 
-        public function set rotateX(value:Number):void {
-            if (_rotateX != value) {
-                _rotateX = value;
-                invalidateTransform();
-            }
-        }
-
-        public function get rotateY():Number {
-            return _rotateY;
-        }
-
-        public function set rotateY(value:Number):void {
-            if (_rotateY != value) {
-                _rotateY = value;
-                invalidateTransform();
-            }
-        }
-
-        public function get rotateZ():Number {
-            return _rotateZ;
-        }
-
-        public function set rotateZ(value:Number):void {
-            if (_rotateZ != value) {
-                _rotateZ = value;
+        public function set rotation(value:Number):void {
+            if (_rotation != value) {
+                _rotation = value;
                 invalidateTransform();
             }
         }
