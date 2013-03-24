@@ -16,19 +16,12 @@ package core {
     public class Renderer {
 
         private var vertexBuffer3D:VertexBuffer3D;
-        private var uvBuffer3D:VertexBuffer3D;
-        private var alphaBuffer3D:VertexBuffer3D;
         private var vertexBufferNumber:Vector.<Number>;
-        private var uvBufferNumber:Vector.<Number>;
-        private var alphaBufferNumber:Vector.<Number>;
         private var indexBufferUint:Vector.<uint>;
         private var indexBufferByCount:Object;
         private var context3D:Context3D;
 
-        private var shaderLinear:Program3D;
         private var shaderAlphaLinear:Program3D;
-
-        private var shader:Program3D;
         private var shaderAlpha:Program3D;
 
         /*
@@ -47,19 +40,11 @@ package core {
         }
 
         public function dispose():void {
-            if (shader) {
-                shader.dispose();
-                shader = null;
-            }
             if (shaderAlpha) {
                 shaderAlpha.dispose();
                 shaderAlpha = null;
             }
 
-            if (shaderLinear) {
-                shaderLinear.dispose();
-                shaderLinear = null;
-            }
             if (shaderAlphaLinear) {
                 shaderAlphaLinear.dispose();
                 shaderAlphaLinear = null;
@@ -69,14 +54,7 @@ package core {
                 vertexBuffer3D.dispose();
                 vertexBuffer3D = null;
             }
-            if (uvBuffer3D) {
-                uvBuffer3D.dispose();
-                uvBuffer3D = null;
-            }
-            if (alphaBuffer3D) {
-                alphaBuffer3D.dispose();
-                alphaBuffer3D = null;
-            }
+
         }
 
         protected function createVideoResources():void {
@@ -86,16 +64,10 @@ package core {
 
             var vertexCount:int = maxSprites * 4;
 
-            vertexBufferNumber = new Vector.<Number>(vertexCount * 3, true);
-            uvBufferNumber = new Vector.<Number>(vertexCount * 2, true);
-            alphaBufferNumber = new Vector.<Number>(vertexCount, true);
+            vertexBufferNumber = new Vector.<Number>(vertexCount * 6, true);
 
-            vertexBuffer3D = context3D.createVertexBuffer(vertexCount, 3);
-            vertexBuffer3D.uploadFromVector(new Vector.<Number>(vertexCount * 3), 0, vertexCount);
-            uvBuffer3D = context3D.createVertexBuffer(vertexCount, 2);
-            uvBuffer3D.uploadFromVector(new Vector.<Number>(vertexCount * 2), 0, vertexCount);
-            alphaBuffer3D = context3D.createVertexBuffer(vertexCount, 1);
-            alphaBuffer3D.uploadFromVector(new Vector.<Number>(vertexCount), 0, vertexCount);
+            vertexBuffer3D = context3D.createVertexBuffer(vertexCount, 6);
+            vertexBuffer3D.uploadFromVector(vertexBufferNumber, 0, vertexCount);
 
             var indexCount:int = maxSprites * 6;
 
@@ -121,13 +93,11 @@ package core {
             context3D.setDepthTest(false, Context3DCompareMode.ALWAYS);
 
             context3D.setVertexBufferAt(0, vertexBuffer3D, 0, Context3DVertexBufferFormat.FLOAT_3); //xyz
-            context3D.setVertexBufferAt(1, uvBuffer3D, 0, Context3DVertexBufferFormat.FLOAT_2); //uv
+            context3D.setVertexBufferAt(1, vertexBuffer3D, 3, Context3DVertexBufferFormat.FLOAT_2); //uv
+            context3D.setVertexBufferAt(2, vertexBuffer3D, 5, Context3DVertexBufferFormat.FLOAT_1); //alpha
 
-            shaderLinear = createShader(false, true);
-            shaderAlphaLinear = createShader(true, true);
-
-            shader = createShader(false, false);
-            shaderAlpha = createShader(true, false);
+            shaderAlphaLinear = createShader(true);
+            shaderAlpha = createShader(false);
         }
 
         private function getIndexBuffer(spriteCount:int):IndexBuffer3D {
@@ -141,8 +111,6 @@ package core {
         }
 
         private var currentIndexInVertexBuffer:int = 0;
-        private var currentIndexInUVBuffer:int = 0;
-        private var currentIndexInAlhaBuffer:int = 0;
         private var batchCount:int = 0;
         public var batchAll:int = 0;
         private var vertexCount:int = 0;
@@ -152,7 +120,6 @@ package core {
         private var lastLinear:Boolean;
 
         public static var maxSprites:int = 1000;
-        private var needAlpha:Boolean;
 
         public var imageCount:int;
 
@@ -186,11 +153,7 @@ package core {
 
             batchAll++;
 
-            if (needAlpha) {
-                alphaBuffer3D.uploadFromVector(alphaBufferNumber, 0, vertexCount);
-            }
             vertexBuffer3D.uploadFromVector(vertexBufferNumber, 0, vertexCount);
-            uvBuffer3D.uploadFromVector(uvBufferNumber, 0, vertexCount);
 
             var blendMode:BlendMode3D = lastBlendMode;
 
@@ -201,18 +164,7 @@ package core {
             }
 
             context3D.setTextureAt(0, lastTexture);
-            context3D.setScissorRectangle(null);
-
-            //context3D.setStencilReferenceValue(1);
-            //context3D.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK, Context3DCompareMode.EQUAL, Context3DStencilAction.INCREMENT_WRAP);
-
-            if (needAlpha) {
-                context3D.setVertexBufferAt(2, alphaBuffer3D, 0, Context3DVertexBufferFormat.FLOAT_1); //alpha
-            } else {
-                context3D.setVertexBufferAt(2, null); //alpha
-            }
-
-            context3D.setProgram(lastLinear ? (needAlpha ? shaderAlphaLinear : shaderLinear) : (needAlpha ? shaderAlpha : shader));
+            context3D.setProgram(lastLinear ? shaderAlphaLinear : shaderAlpha);
 
             context3D.drawTriangles(getIndexBuffer(batchCount), 0, batchCount << 1);
 
@@ -222,30 +174,24 @@ package core {
         private function clear():void {
             batchCount = 0;
             vertexCount = 0;
-            needAlpha = false;
             currentIndexInVertexBuffer = 0;
-            currentIndexInUVBuffer = 0;
-            currentIndexInAlhaBuffer = 0;
             lastBlendMode = null;
             lastTexture = null;
             lastLinear = false;
         }
 
-        private function createShader(isAlphaEnable:Boolean, linear:Boolean):Program3D {
+        private function createShader(linear:Boolean):Program3D {
             var filter:String = linear ? "linear" : "nearest";
 
             var vs:String = "mov op, va0\n"
             vs += "mov v0, va1\n";
 
-            if (isAlphaEnable) {
-                vs += "mov v1, va2\n";
 
-                var fs:String = "tex ft1, v0.xy, fs0 <display, repeat, " + filter + "> \n";
-                fs += "mul oc, ft1, v1.x";
+            vs += "mov v1, va2\n";
 
-            } else {
-                fs = "tex oc, v0.xy, fs0 <display, repeat, " + filter + ">";
-            }
+            var fs:String = "tex ft1, v0.xy, fs0 <display, repeat, " + filter + "> \n";
+            fs += "mul oc, ft1, v1.x";
+
 
             var vertexAssembler:AGALMiniAssembler = new AGALMiniAssembler();
             vertexAssembler.assemble(Context3DProgramType.VERTEX, vs);
@@ -277,44 +223,39 @@ package core {
             if ((y0 < -1 && y1 < -1 && y2 < -1 && y3 < -1) ||
                     (1 < y0 && 1 < y1 && 1 < y2 && 1 < y3))return;
 
+            var alpha:Number = image.alphaGlobal;
+
+            var imageSource:ImageSource = image.source;
+
 
             vertexBufferNumber[currentIndexInVertexBuffer++] = x0;
             vertexBufferNumber[currentIndexInVertexBuffer++] = y0;
             vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[2];
+            vertexBufferNumber[currentIndexInVertexBuffer++] = imageSource.u0;
+            vertexBufferNumber[currentIndexInVertexBuffer++] = imageSource.v0;
+            vertexBufferNumber[currentIndexInVertexBuffer++] = alpha;
 
             vertexBufferNumber[currentIndexInVertexBuffer++] = x1;
             vertexBufferNumber[currentIndexInVertexBuffer++] = y1;
             vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[5];
+            vertexBufferNumber[currentIndexInVertexBuffer++] = imageSource.u0;
+            vertexBufferNumber[currentIndexInVertexBuffer++] = imageSource.v1;
+            vertexBufferNumber[currentIndexInVertexBuffer++] = alpha;
 
             vertexBufferNumber[currentIndexInVertexBuffer++] = x2;
             vertexBufferNumber[currentIndexInVertexBuffer++] = y2;
             vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[8];
-
+            vertexBufferNumber[currentIndexInVertexBuffer++] = imageSource.u1;
+            vertexBufferNumber[currentIndexInVertexBuffer++] = imageSource.v1;
+            vertexBufferNumber[currentIndexInVertexBuffer++] = alpha;
 
             vertexBufferNumber[currentIndexInVertexBuffer++] = x3;
             vertexBufferNumber[currentIndexInVertexBuffer++] = y3;
             vertexBufferNumber[currentIndexInVertexBuffer++] = verticesTransformed[11];
+            vertexBufferNumber[currentIndexInVertexBuffer++] = imageSource.u1;
+            vertexBufferNumber[currentIndexInVertexBuffer++] = imageSource.v0;
+            vertexBufferNumber[currentIndexInVertexBuffer++] = alpha;
 
-            var imageSource:ImageSource = image.source;
-            uvBufferNumber[currentIndexInUVBuffer++] = imageSource.u0;
-            uvBufferNumber[currentIndexInUVBuffer++] = imageSource.v0;
-
-            uvBufferNumber[currentIndexInUVBuffer++] = imageSource.u0;
-            uvBufferNumber[currentIndexInUVBuffer++] = imageSource.v1;
-
-            uvBufferNumber[currentIndexInUVBuffer++] = imageSource.u1;
-            uvBufferNumber[currentIndexInUVBuffer++] = imageSource.v1;
-
-            uvBufferNumber[currentIndexInUVBuffer++] = imageSource.u1;
-            uvBufferNumber[currentIndexInUVBuffer++] = imageSource.v0;
-
-            var alpha:Number = image.alphaGlobal;
-            needAlpha ||= alpha < 1;
-
-            alphaBufferNumber[currentIndexInAlhaBuffer++] = alpha;
-            alphaBufferNumber[currentIndexInAlhaBuffer++] = alpha;
-            alphaBufferNumber[currentIndexInAlhaBuffer++] = alpha;
-            alphaBufferNumber[currentIndexInAlhaBuffer++] = alpha;
 
             vertexCount += 4;
             batchCount++;

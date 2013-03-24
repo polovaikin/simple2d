@@ -1,6 +1,8 @@
 package core {
     import core.atlas.AtlasManager;
 
+    import flash.concurrent.Condition;
+
     import flash.display.DisplayObject;
     import flash.display.Stage;
     import flash.display.Stage3D;
@@ -29,6 +31,8 @@ package core {
 
         public var stage3D:Stage3D;
         public var driverInfo:String;
+        public var enableErrorChecking:Boolean;
+
         public var context3D:Context3D;
         public var scene:Container;
 
@@ -45,6 +49,7 @@ package core {
         public var viewportMousePos:Vector3D;
 
         private var antiAlias:int;
+
 
         public function init(app:DisplayObject, virtualWidth:Number, virtualHeight:Number, antiAlias:int = 0):Container {
             this.app = app;
@@ -160,7 +165,7 @@ package core {
             context3D = stage3D.context3D;
             trace(context3D.driverInfo);
 
-            context3D.enableErrorChecking = debug;
+            enableErrorChecking = context3D.enableErrorChecking = Capabilities.isDebugger;
             Renderer.instance.init(context3D);
 
             driverInfo = context3D.driverInfo;
@@ -194,7 +199,7 @@ package core {
         }
 
         private function onEnterFrame(event:Event):void {
-            Engine.instance.context3D.clear(1, 1, 1);
+            context3D.clear(1, 1, 1);
             AtlasManager.instance.validateUpload();
 
             var time:int = getTimer();
@@ -204,7 +209,7 @@ package core {
             scene.render(time);
 
             Renderer.instance.renderBatch();
-            Engine.instance.context3D.present();
+            context3D.present();
         }
     }
 
